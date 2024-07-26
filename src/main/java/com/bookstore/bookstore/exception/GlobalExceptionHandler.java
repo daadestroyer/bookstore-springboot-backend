@@ -1,5 +1,7 @@
 package com.bookstore.bookstore.exception;
 
+import com.bookstore.bookstore.entity.Book;
+import com.bookstore.bookstore.entity.ErrorMessage;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -37,5 +39,11 @@ public class GlobalExceptionHandler {
             errors.put("error", "Data integrity violation");
         }
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errors);
+    }
+
+    @ExceptionHandler(BookNotFoundException.class)
+    public ResponseEntity<?> handleBookNotFoundException(BookNotFoundException bookNotFoundException) {
+        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.NOT_FOUND, bookNotFoundException.getMessage());
+        return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
     }
 }

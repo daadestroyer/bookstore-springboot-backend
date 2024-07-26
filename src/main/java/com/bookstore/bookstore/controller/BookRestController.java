@@ -1,6 +1,7 @@
 package com.bookstore.bookstore.controller;
 
 import com.bookstore.bookstore.entity.Book;
+import com.bookstore.bookstore.exception.BookNotFoundException;
 import com.bookstore.bookstore.service.BookService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,12 +30,12 @@ public class BookRestController {
     }
 
     @GetMapping("/get-book-by-id/{bookId}")
-    public Book getBookById(@PathVariable int bookId) {
+    public Book getBookById(@PathVariable int bookId) throws BookNotFoundException {
         return bookService.findBookById(bookId);
     }
 
     @DeleteMapping("/delete-book/{bookId}")
-    public String deleteBookById(@PathVariable int bookId) {
+    public String deleteBookById(@PathVariable int bookId) throws BookNotFoundException {
         return bookService.deleteBook(bookId);
     }
 

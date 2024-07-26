@@ -1,11 +1,13 @@
 package com.bookstore.bookstore.service;
 
 import com.bookstore.bookstore.entity.Book;
+import com.bookstore.bookstore.exception.BookNotFoundException;
 import com.bookstore.bookstore.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -24,14 +26,19 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Book findBookById(int bookId) {
-        return bookRepository.findById(bookId).get();
+    public Book findBookById(int bookId) throws BookNotFoundException {
+        return bookRepository.findById(bookId).orElseThrow(()-> new BookNotFoundException("Book Id "+bookId+" not found"));
     }
 
     @Override
-    public String deleteBook(int bookId) {
-        bookRepository.deleteById(bookId);
-        return "book deleted";
+    public String deleteBook(int bookId) throws BookNotFoundException {
+        Optional<Book> optionalBook = bookRepository.findById(bookId);
+        if(optionalBook.isPresent()){
+            Book book = optionalBook.get();
+            bookRepository.deleteById(bookId);
+            return "Book "+bookId+" deleted";
+        }
+        throw new BookNotFoundException("Book Id "+bookId+" not found");
     }
 
     @Override

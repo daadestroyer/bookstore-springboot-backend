@@ -1,6 +1,7 @@
 package com.bookstore.bookstore.service;
 
 import com.bookstore.bookstore.entity.Book;
+import com.bookstore.bookstore.exception.BookNotFoundException;
 
 import java.util.List;
 
@@ -9,9 +10,9 @@ public interface BookService {
 
     List<Book> findAllBooks();
 
-    Book findBookById(int bookId);
+    Book findBookById(int bookId) throws BookNotFoundException;
 
-    String deleteBook(int bookId);
+    String deleteBook(int bookId) throws BookNotFoundException;
 
     Book updateBook(int bookId, Book book);
 
