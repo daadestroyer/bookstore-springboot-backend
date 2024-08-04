@@ -41,9 +41,15 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errors);
     }
 
-    @ExceptionHandler(BookNotFoundException.class)
-    public ResponseEntity<?> handleBookNotFoundException(BookNotFoundException bookNotFoundException) {
-        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.NOT_FOUND, bookNotFoundException.getMessage());
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<?> handleBookNotFoundException(ResourceNotFoundException resourceNotFoundException) {
+        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.NOT_FOUND, resourceNotFoundException.getMessage());
         return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(AlreadyPresentException.class)
+    public ResponseEntity<?> handleAlreadyPresentException(AlreadyPresentException alreadyPresentException) {
+        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.NOT_ACCEPTABLE, alreadyPresentException.getMessage());
+        return new ResponseEntity<>(errorMessage, HttpStatus.NOT_ACCEPTABLE);
     }
 }

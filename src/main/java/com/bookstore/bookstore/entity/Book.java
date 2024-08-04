@@ -1,11 +1,9 @@
 package com.bookstore.bookstore.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.*;
-import org.antlr.v4.runtime.misc.NotNull;
 
 @Entity
 @Table(name = "book_tb")
@@ -22,10 +20,18 @@ public class Book {
     @NotEmpty(message = "Please enter book name")
     @Size(min = 5 , message = "minimum length of book name is five")
     private String bookName;
-    private String bookRating;
+
+    @NotNull(message = "please enter book rating")
+    @Positive(message = "book rating must in positive")
+    @Max(value = 5, message = "maximum value allowed is 5")
+    private int bookRating;
 
     @Column(unique = true)
     @NotEmpty(message = "Please enter book code")
     private String bookCode;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "authorId", referencedColumnName = "authorId")
+    private Author author;
 
 }
