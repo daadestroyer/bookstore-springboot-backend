@@ -11,6 +11,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,11 +34,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
         Map<String, String> errors = new HashMap<>();
         Throwable cause = ex.getCause();
-        if (cause instanceof ConstraintViolationException) {
-            errors.put("error", "Data integrity violation");
-        } else {
-            errors.put("bookCode", "Book code must be unique");
 
+        if (cause.getMessage().contains("book_code")) {
+            errors.put("bookCode", "Book code must be unique");
+        } else if (cause.getMessage().contains("author_tb")) {
+            errors.put("authorEmail", "Author email must be unique");
         }
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errors);
     }

@@ -32,6 +32,7 @@ public class Author {
 
     @NotEmpty(message = "Please enter email")
     @Email(message = "Please enter a valid email")
+    @Column(unique = true)
     private String authorEmail;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.  ALL, orphanRemoval = true,fetch = FetchType.LAZY)

@@ -28,7 +28,7 @@ public class BookServiceImpl implements BookService {
         dbBooks.add(newBook);
         dbAuthor.setBooks(dbBooks);
         Author savedAuthor = authorRepository.save(dbAuthor);
-        return savedAuthor.getBooks();
+        return dbAuthor.getBooks();
     }
 
     @Override
