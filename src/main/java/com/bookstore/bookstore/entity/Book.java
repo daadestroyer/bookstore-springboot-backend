@@ -30,7 +30,7 @@ public class Book {
     @NotEmpty(message = "Please enter book code")
     private String bookCode;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "authorId",referencedColumnName = "authorId", nullable = false)
     @JsonBackReference
     private Author author;

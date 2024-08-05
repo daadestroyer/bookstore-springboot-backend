@@ -26,21 +26,16 @@ public class BookController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Book>> getBookById(@PathVariable String id) {
-        Optional<Book> book = bookService.getBookById(Integer.parseInt(id));
-        return ResponseEntity.ok(book);
+    public ResponseEntity<?> getBookById(@PathVariable String id) throws ResourceNotFoundException {
+        Book book = bookService.getBookById(Integer.parseInt(id));
+
+        return new ResponseEntity<>(book, HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity<List<Book>> getAllBooks() {
         List<Book> books = bookService.getAllBooks();
         return ResponseEntity.ok(books);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBookById(@PathVariable int id) {
-        bookService.deleteBookById(id);
-        return ResponseEntity.noContent().build();
     }
 
     @PutMapping
@@ -52,7 +47,13 @@ public class BookController {
     @GetMapping("/search")
     public ResponseEntity<?> findAllBooksWithThiName(@RequestParam String bookName) throws ResourceNotFoundException {
         List<Book> books = this.bookService.findBookByName(bookName);
-       return new ResponseEntity<>(books,HttpStatus.OK);
+        return new ResponseEntity<>(books, HttpStatus.OK);
 
+    }
+
+    @DeleteMapping("/{bookId}")
+    public ResponseEntity<?> deleteBooks(@PathVariable int bookId) throws ResourceNotFoundException {
+        String message = this.bookService.deleteBookById(bookId);
+        return new ResponseEntity<>(message, HttpStatus.OK);
     }
 }

@@ -6,11 +6,8 @@ import com.bookstore.bookstore.exception.ResourceNotFoundException;
 import com.bookstore.bookstore.repository.AuthorRepository;
 import com.bookstore.bookstore.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,8 +33,8 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Optional<Book> getBookById(int id) {
-        return bookRepository.findById(id);
+    public Book getBookById(int id) throws ResourceNotFoundException {
+         return bookRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Book with id "+id+" not found"));
     }
 
     @Override
@@ -46,8 +43,16 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void deleteBookById(int id) {
-        bookRepository.deleteById(id);
+    public String deleteBookById(int id) throws ResourceNotFoundException {
+        Optional<Book> optionalBook = this.bookRepository.findById(id);
+        if(!optionalBook.isPresent()){
+            throw new ResourceNotFoundException("Book with id "+id+" not found");
+        }
+        else{
+            bookRepository.deleteById(id);
+            return "Book deleted";
+        }
+
     }
 
     @Override
