@@ -19,19 +19,23 @@ import java.util.List;
 @ToString
 public class Author {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int authorId;
 
-    @NotEmpty(message = "please enter author name")
+    @NotEmpty(message = "Please enter author name")
     private String authorName;
 
-    @NotNull(message = "please enter author rating")
-    @Positive(message = "author rating must in positive")
-    @Max(value = 5, message = "maximum value allowed is 5")
+    @NotNull(message = "Please enter author rating")
+    @Positive(message = "Author rating must be positive")
+    @Max(value = 5, message = "Maximum value allowed is 5")
     private int authorRating;
 
-    @NotEmpty(message = "please enter email")
-    @Email(message = "please enter valid email")
+    @NotEmpty(message = "Please enter email")
+    @Email(message = "Please enter a valid email")
     private String authorEmail;
 
+    @OneToMany(mappedBy = "author", cascade = CascadeType.  ALL, orphanRemoval = true,fetch = FetchType.LAZY)
+    @Valid
+    @JsonManagedReference
+    private List<Book> books;
 }

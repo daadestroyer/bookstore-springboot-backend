@@ -34,9 +34,10 @@ public class GlobalExceptionHandler {
         Map<String, String> errors = new HashMap<>();
         Throwable cause = ex.getCause();
         if (cause instanceof ConstraintViolationException) {
-            errors.put("bookCode", "Book code must be unique");
-        } else {
             errors.put("error", "Data integrity violation");
+        } else {
+            errors.put("bookCode", "Book code must be unique");
+
         }
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errors);
     }

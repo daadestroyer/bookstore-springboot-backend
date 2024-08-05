@@ -14,24 +14,24 @@ import lombok.*;
 @Builder
 public class Book {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int bookId;
 
     @NotEmpty(message = "Please enter book name")
-    @Size(min = 5 , message = "minimum length of book name is five")
+    @Size(min = 5, message = "Minimum length of book name is five")
     private String bookName;
 
-    @NotNull(message = "please enter book rating")
-    @Positive(message = "book rating must in positive")
-    @Max(value = 5, message = "maximum value allowed is 5")
+    @NotNull(message = "Please enter book rating")
+    @Positive(message = "Book rating must be positive")
+    @Max(value = 5, message = "Maximum value allowed is 5")
     private int bookRating;
 
     @Column(unique = true)
     @NotEmpty(message = "Please enter book code")
     private String bookCode;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "authorId", referencedColumnName = "authorId")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "authorId",referencedColumnName = "authorId", nullable = false)
+    @JsonBackReference
     private Author author;
-
 }

@@ -9,60 +9,40 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BookServiceImpl implements BookService {
+
     @Autowired
     private BookRepository bookRepository;
+
     @Autowired
     private AuthorRepository authorRepository;
-
     @Override
-    public Book saveBook(Book book) throws ResourceNotFoundException {
-        return this.bookRepository.save(book);
+    public List<Book> saveBook(int authorId, Book newBook) throws ResourceNotFoundException {
+        // fetch the existing owner
+        Author dbAuthor = this.authorRepository.findById(authorId).orElseThrow(() -> new ResourceNotFoundException("Author with id " + authorId + " not found"));
+        List<Book> dbBooks = dbAuthor.getBooks();
+        newBook.setAuthor(dbAuthor);
+        dbBooks.add(newBook);
+        dbAuthor.setBooks(dbBooks);
+        Author savedAuthor = authorRepository.save(dbAuthor);
+        return savedAuthor.getBooks();
     }
 
     @Override
-    public Book saveBookForExistingAuthor(String email, Book book) throws ResourceNotFoundException {
-        return null;
+    public Optional<Book> getBookById(int id) {
+        return bookRepository.findById(id);
     }
 
-
     @Override
-    public List<Book> findAllBooks() {
+    public List<Book> getAllBooks() {
         return bookRepository.findAll();
     }
 
     @Override
-    public Book findBookById(int bookId) throws ResourceNotFoundException {
-        return bookRepository.findById(bookId)
-                .orElseThrow(() -> new ResourceNotFoundException("Book with ID " + bookId + " not found"));
-    }
-
-    @Override
-    public String deleteBook(int bookId) throws ResourceNotFoundException {
-        Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new ResourceNotFoundException("Book with ID " + bookId + " not found"));
-
-        bookRepository.delete(book);
-        return "Book with ID " + bookId + " has been deleted";
-    }
-
-    @Override
-    public Book updateBook(int bookId, Book book) {
-        // Implementation for updating a book
-        return null;
-    }
-
-    @Override
-    public List<Book> getBookByName(String name) {
-        // Implementation for finding books by name
-        return null;
-    }
-
-    @Override
-    public Book getBookByBookCode(String bookCode) throws ResourceNotFoundException {
-        return bookRepository.findByBookCode(bookCode)
-                .orElseThrow(() -> new ResourceNotFoundException("Book with book code " + bookCode + " not found"));
+    public void deleteBookById(int id) {
+        bookRepository.deleteById(id);
     }
 }
