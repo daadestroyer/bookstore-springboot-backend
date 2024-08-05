@@ -5,6 +5,7 @@ import com.bookstore.bookstore.exception.ResourceNotFoundException;
 import com.bookstore.bookstore.service.AuthorService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,4 +42,11 @@ public class AuthorController {
         String message = authorService.deleteAuthorById(id);
         return ResponseEntity.ok(message);
     }
+
+    @PutMapping()
+    public ResponseEntity<?> updateAuthor(@Valid @RequestParam int authorId, @RequestBody Author newAuthor) throws ResourceNotFoundException {
+        Author author = this.authorService.updateAuthor(authorId, newAuthor);
+        return new ResponseEntity<>(author, HttpStatus.OK);
+    }
+
 }

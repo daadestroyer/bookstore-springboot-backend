@@ -7,7 +7,12 @@ import java.util.List;
 
 public interface AuthorService {
     Author saveAuthor(Author author);
+
     Author getAuthorById(int id) throws ResourceNotFoundException;
+
     List<Author> getAllAuthors();
+
     String deleteAuthorById(int id) throws ResourceNotFoundException;
+
+    Author updateAuthor(int authorId, Author author) throws ResourceNotFoundException;
 }

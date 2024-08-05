@@ -22,7 +22,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public Author saveAuthor(Author author) {
-            return this.authorRepository.save(author);
+        return this.authorRepository.save(author);
     }
 
     @Override
@@ -43,6 +43,19 @@ public class AuthorServiceImpl implements AuthorService {
             return "Author " + id + " deleted...";
         } else {
             throw new ResourceNotFoundException("Author with id " + id + " not found");
+        }
+    }
+    @Override
+    public Author updateAuthor(int authorId, Author newAuthor) throws ResourceNotFoundException {
+        Optional<Author> optionalAuthor = this.authorRepository.findById(authorId);
+        if (!optionalAuthor.isPresent()) {
+            throw new ResourceNotFoundException("Author with id " + authorId + " not found");
+        } else {
+            Author dbAuthor = optionalAuthor.get();
+            List<Book> dbBooks = dbAuthor.getBooks();
+            newAuthor.setAuthorId(authorId);
+            newAuthor.setBooks(dbAuthor.getBooks());
+            return this.authorRepository.save(newAuthor);
         }
     }
 }
