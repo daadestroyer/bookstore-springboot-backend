@@ -22,27 +22,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public Author saveAuthor(Author author) {
-        Optional<Author> optionalAuthor = this.authorRepository.findById(author.getAuthorId());
-        // saving new author
-        if (!optionalAuthor.isPresent()) {
             return this.authorRepository.save(author);
-        } else {
-            // if author is present just add new books if any
-            Author dbAuthor = optionalAuthor.get();
-            List<Book> dbBookList = dbAuthor.getBooks();
-            List<Book> newBooks = author.getBooks();
-
-            // fetching each new book
-            for (Book book : newBooks) {
-                // for each new book setting author
-                book.setAuthor(dbAuthor);
-
-                // adding new book to our db book list
-                dbBookList.add(book);
-            }
-            dbAuthor.setBooks(dbBookList);
-            return this.authorRepository.save(dbAuthor);
-        }
     }
 
     @Override
