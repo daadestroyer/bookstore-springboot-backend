@@ -2,6 +2,7 @@ package com.bookstore.bookstore.service;
 
 import com.bookstore.bookstore.entity.Author;
 import com.bookstore.bookstore.entity.Book;
+import com.bookstore.bookstore.exception.ResourceNotFoundException;
 import com.bookstore.bookstore.repository.AuthorRepository;
 import com.bookstore.bookstore.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,17 +24,16 @@ public class AuthorServiceImpl implements AuthorService {
     public Author saveAuthor(Author author) {
         Optional<Author> optionalAuthor = this.authorRepository.findById(author.getAuthorId());
         // saving new author
-        if(!optionalAuthor.isPresent()){
+        if (!optionalAuthor.isPresent()) {
             return this.authorRepository.save(author);
-        }
-        else{
+        } else {
             // if author is present just add new books if any
             Author dbAuthor = optionalAuthor.get();
             List<Book> dbBookList = dbAuthor.getBooks();
             List<Book> newBooks = author.getBooks();
 
             // fetching each new book
-            for(Book book : newBooks){
+            for (Book book : newBooks) {
                 // for each new book setting author
                 book.setAuthor(dbAuthor);
 
@@ -46,8 +46,8 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public Optional<Author> getAuthorById(int id) {
-        return authorRepository.findById(id);
+    public Author getAuthorById(int id) throws ResourceNotFoundException {
+        return authorRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Author with id " + id + " not found"));
     }
 
     @Override
@@ -56,7 +56,13 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public void deleteAuthorById(int id) {
-        authorRepository.deleteById(id);
+    public String deleteAuthorById(int id) throws ResourceNotFoundException {
+        Optional<Author> optionalAuthor = this.authorRepository.findById(id);
+        if (optionalAuthor.isPresent()) {
+            this.authorRepository.deleteById(id);
+            return "Author " + id + " deleted...";
+        } else {
+            throw new ResourceNotFoundException("Author with id " + id + " not found");
+        }
     }
 }

@@ -1,13 +1,13 @@
 package com.bookstore.bookstore.service;
 
 import com.bookstore.bookstore.entity.Author;
+import com.bookstore.bookstore.exception.ResourceNotFoundException;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface AuthorService {
     Author saveAuthor(Author author);
-    Optional<Author> getAuthorById(int id);
+    Author getAuthorById(int id) throws ResourceNotFoundException;
     List<Author> getAllAuthors();
-    void deleteAuthorById(int id);
+    String deleteAuthorById(int id) throws ResourceNotFoundException;
 }

@@ -14,7 +14,7 @@ import lombok.*;
 @Builder
 public class Book {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int bookId;
 
     @NotEmpty(message = "Please enter book name")

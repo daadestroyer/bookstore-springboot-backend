@@ -1,6 +1,7 @@
 package com.bookstore.bookstore.controller;
 
 import com.bookstore.bookstore.entity.Author;
+import com.bookstore.bookstore.exception.ResourceNotFoundException;
 import com.bookstore.bookstore.service.AuthorService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +25,8 @@ public class AuthorController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Author>> getAuthorById(@PathVariable int id) {
-        Optional<Author> author = authorService.getAuthorById(id);
+    public ResponseEntity<?> getAuthorById(@PathVariable int id) throws ResourceNotFoundException {
+        Author author = authorService.getAuthorById(id);
         return ResponseEntity.ok(author);
     }
 
@@ -36,8 +37,8 @@ public class AuthorController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAuthorById(@PathVariable int id) {
-        authorService.deleteAuthorById(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> deleteAuthorById(@PathVariable int id) throws ResourceNotFoundException {
+        String message = authorService.deleteAuthorById(id);
+        return ResponseEntity.ok(message);
     }
 }

@@ -19,7 +19,7 @@ import java.util.List;
 @ToString
 public class Author {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int authorId;
 
     @NotEmpty(message = "Please enter author name")
@@ -35,7 +35,7 @@ public class Author {
     @Column(unique = true)
     private String authorEmail;
 
-    @OneToMany(mappedBy = "author", cascade = CascadeType.  ALL, orphanRemoval = true,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Valid
     @JsonManagedReference
     private List<Book> books;

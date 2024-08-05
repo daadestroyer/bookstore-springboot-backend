@@ -5,6 +5,7 @@ import com.bookstore.bookstore.exception.ResourceNotFoundException;
 import com.bookstore.bookstore.service.BookService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,14 +20,14 @@ public class BookController {
     private BookService bookService;
 
     @PostMapping("/{authorId}")
-    public ResponseEntity<?> createBook(@Valid @PathVariable int authorId, @RequestBody Book book) throws ResourceNotFoundException {
-        List<Book> books = bookService.saveBook(authorId, book);
+    public ResponseEntity<?> addNewBook(@Valid @PathVariable int authorId, @RequestBody Book book) throws ResourceNotFoundException {
+        List<Book> books = bookService.addNewBook(authorId, book);
         return ResponseEntity.ok(books);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Book>> getBookById(@PathVariable int id) {
-        Optional<Book> book = bookService.getBookById(id);
+    public ResponseEntity<Optional<Book>> getBookById(@PathVariable String id) {
+        Optional<Book> book = bookService.getBookById(Integer.parseInt(id));
         return ResponseEntity.ok(book);
     }
 
@@ -40,5 +41,18 @@ public class BookController {
     public ResponseEntity<Void> deleteBookById(@PathVariable int id) {
         bookService.deleteBookById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping
+    public ResponseEntity<?> updateBook(@RequestBody Book book) throws ResourceNotFoundException {
+        this.bookService.updateBook(book);
+        return new ResponseEntity<>(book, HttpStatus.OK);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> findAllBooksWithThiName(@RequestParam String bookName) throws ResourceNotFoundException {
+        List<Book> books = this.bookService.findBookByName(bookName);
+       return new ResponseEntity<>(books,HttpStatus.OK);
+
     }
 }
