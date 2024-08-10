@@ -31,7 +31,7 @@ public class Book {
     private String bookCode;
 
     @ManyToOne
-    @JoinColumn(name = "authorId",referencedColumnName = "authorId", nullable = false)
+    @JoinColumn(name = "authorId" , referencedColumnName = "authorId" , nullable = false)
     @JsonBackReference
     private Author author;
 }

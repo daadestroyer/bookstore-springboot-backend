@@ -33,9 +33,12 @@ public class BookController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Book>> getAllBooks() {
+    public ResponseEntity<?> getAllBooks() {
         List<Book> books = bookService.getAllBooks();
-        return ResponseEntity.ok(books);
+        if(books.size() == 0){
+            return new ResponseEntity<>("no books found",HttpStatus.OK);
+        }
+        return new ResponseEntity<>(books,HttpStatus.OK);
     }
 
     @PutMapping

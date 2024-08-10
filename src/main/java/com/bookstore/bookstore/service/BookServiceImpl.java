@@ -20,21 +20,21 @@ public class BookServiceImpl implements BookService {
     @Autowired
     private AuthorRepository authorRepository;
 
+
     @Override
     public List<Book> addNewBook(int authorId, Book newBook) throws ResourceNotFoundException {
-        // fetch the existing owner
         Author dbAuthor = this.authorRepository.findById(authorId).orElseThrow(() -> new ResourceNotFoundException("Author with id " + authorId + " not found"));
         List<Book> dbBooks = dbAuthor.getBooks();
         newBook.setAuthor(dbAuthor);
         dbBooks.add(newBook);
-        dbAuthor.setBooks(dbBooks);
-        Author savedAuthor = authorRepository.save(dbAuthor);
-        return dbAuthor.getBooks(); // return the total books present now in db for this author
+        this.authorRepository.save(dbAuthor);
+        return dbAuthor.getBooks();
+
     }
 
     @Override
     public Book getBookById(int id) throws ResourceNotFoundException {
-         return bookRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Book with id "+id+" not found"));
+        return bookRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Book with id " + id + " not found"));
     }
 
     @Override
@@ -45,10 +45,9 @@ public class BookServiceImpl implements BookService {
     @Override
     public String deleteBookById(int id) throws ResourceNotFoundException {
         Optional<Book> optionalBook = this.bookRepository.findById(id);
-        if(!optionalBook.isPresent()){
-            throw new ResourceNotFoundException("Book with id "+id+" not found");
-        }
-        else{
+        if (!optionalBook.isPresent()) {
+            throw new ResourceNotFoundException("Book with id " + id + " not found");
+        } else {
             bookRepository.deleteById(id);
             return "Book deleted";
         }
@@ -57,19 +56,20 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book updateBook(Book newBook) throws ResourceNotFoundException {
-        // first check this book exist or not
         Optional<Book> optionalBook = this.bookRepository.findById(newBook.getBookId());
-        if (!optionalBook.isPresent()) {
+        if(!optionalBook.isPresent()){
             throw new ResourceNotFoundException("Book with id " + newBook.getBookId() + " not found");
-        } else {
-            // if this book exist then fetch this book
-            Book dbBook = optionalBook.get();
-
-            newBook.setBookId(dbBook.getBookId());
-            newBook.setAuthor(dbBook.getAuthor());
-            return this.bookRepository.save(newBook);
         }
+        else{
+            Book dbBook = optionalBook.get();
+            Author dbAuthor = dbBook.getAuthor();
 
+            // saving new book
+            newBook.setAuthor(dbAuthor);
+            newBook.setBookId(dbBook.getBookId());
+            return this.bookRepository.save(newBook);
+
+        }
     }
 
     @Override

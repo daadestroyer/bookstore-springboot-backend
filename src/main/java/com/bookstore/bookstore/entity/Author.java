@@ -12,22 +12,21 @@ import lombok.ToString;
 import java.util.List;
 
 @Entity
-@Table(name = "author_tb")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Table(name = "author_tb")
 public class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int authorId;
+    public int authorId;
 
     @NotEmpty(message = "Please enter author name")
     private String authorName;
-
-    @NotNull(message = "Please enter author rating")
-    @Positive(message = "Author rating must be positive")
+    @NotNull // not null always be used for integer field
     @Max(value = 5, message = "Maximum value allowed is 5")
+    @Positive(message = "Author rating must be possitive")
     private int authorRating;
 
     @NotEmpty(message = "Please enter email")
@@ -35,7 +34,7 @@ public class Author {
     @Column(unique = true)
     private String authorEmail;
 
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @Valid
     @JsonManagedReference
     private List<Book> books;

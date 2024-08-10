@@ -4,7 +4,6 @@ import com.bookstore.bookstore.entity.Author;
 import com.bookstore.bookstore.entity.Book;
 import com.bookstore.bookstore.exception.ResourceNotFoundException;
 import com.bookstore.bookstore.repository.AuthorRepository;
-import com.bookstore.bookstore.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,12 +12,8 @@ import java.util.Optional;
 
 @Service
 public class AuthorServiceImpl implements AuthorService {
-
     @Autowired
     private AuthorRepository authorRepository;
-
-    @Autowired
-    private BookRepository bookRepository;
 
     @Override
     public Author saveAuthor(Author author) {
@@ -27,12 +22,12 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public Author getAuthorById(int id) throws ResourceNotFoundException {
-        return authorRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Author with id " + id + " not found"));
+        return this.authorRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Author with id " + id + " not found"));
     }
 
     @Override
     public List<Author> getAllAuthors() {
-        return authorRepository.findAll();
+        return this.authorRepository.findAll();
     }
 
     @Override
@@ -40,11 +35,12 @@ public class AuthorServiceImpl implements AuthorService {
         Optional<Author> optionalAuthor = this.authorRepository.findById(id);
         if (optionalAuthor.isPresent()) {
             this.authorRepository.deleteById(id);
-            return "Author " + id + " deleted...";
+            return "Author with id " + id + " deleted";
         } else {
             throw new ResourceNotFoundException("Author with id " + id + " not found");
         }
     }
+
     @Override
     public Author updateAuthor(int authorId, Author newAuthor) throws ResourceNotFoundException {
         Optional<Author> optionalAuthor = this.authorRepository.findById(authorId);
@@ -53,9 +49,10 @@ public class AuthorServiceImpl implements AuthorService {
         } else {
             Author dbAuthor = optionalAuthor.get();
             List<Book> dbBooks = dbAuthor.getBooks();
-            newAuthor.setAuthorId(authorId);
+            newAuthor.setAuthorId(dbAuthor.getAuthorId());
             newAuthor.setBooks(dbAuthor.getBooks());
             return this.authorRepository.save(newAuthor);
         }
+
     }
 }
